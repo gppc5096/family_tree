@@ -341,7 +341,7 @@ const FamilyTree = () => {
       }}
     >
       <Header>
-        <BackButton onClick={() => window.location.href = '/'}>
+        <BackButton onClick={() => window.location.href = '/settings'}>
           ← 설정으로
         </BackButton>
         <Title 

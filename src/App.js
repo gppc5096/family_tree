@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { FamilyTreeProvider } from './contexts/FamilyTreeContext';
 import Settings from './pages/Settings';
 import FamilyTree from './pages/FamilyTree';
@@ -20,8 +20,9 @@ function App() {
       <GlobalStyle />
       <Router>
         <Routes>
-          <Route path="/" element={<Settings />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/tree" element={<FamilyTree />} />
+          <Route path="/" element={<Navigate to="/tree" replace />} />
         </Routes>
       </Router>
     </FamilyTreeProvider>
