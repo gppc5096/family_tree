@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { FamilyTreeProvider } from './contexts/FamilyTreeContext';
+import Settings from './pages/Settings';
+import FamilyTree from './pages/FamilyTree';
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Poor+Story&family=Sunflower:wght@500&display=swap');
+`;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <FamilyTreeProvider>
+      <GlobalStyle />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Settings />} />
+          <Route path="/tree" element={<FamilyTree />} />
+        </Routes>
+      </Router>
+    </FamilyTreeProvider>
   );
 }
 
