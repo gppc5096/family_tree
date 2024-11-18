@@ -73,154 +73,253 @@ const MemberForm = () => {
 
   return (
     <FormContainer>
-      <FormGroup>
-        <Input
-          type="text"
-          value={member.name}
-          onChange={(e) => setMember({ ...member, name: e.target.value })}
-          placeholder="이름을 입력하세요"
-        />
-        
-        <Select
-          value={member.parentId}
-          onChange={(e) => setMember({ ...member, parentId: e.target.value })}
-        >
-          <option value="">부모 선택 (선택사항)</option>
-          {familyData.members
-            .filter(m => m.id !== member.id) // 자기 자신은 부모로 선택할 수 없음
-            .map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))
-          }
-        </Select>
-
-        <ButtonGroup>
-          <ActionButton 
-            type="button" 
-            onClick={handleAddMember}
-            color="#28a745"
-          >
-            {isEditing ? '수정' : '추가'}
-          </ActionButton>
+      {/* 입력 필드 섹션 */}
+      <InputSection>
+        <InputTitle>새 구성원 {isEditing ? '수정' : '추가'}</InputTitle>
+        <FormGroup>
+          <InputLabel>이름</InputLabel>
+          <Input
+            type="text"
+            value={member.name}
+            onChange={(e) => setMember({ ...member, name: e.target.value })}
+            placeholder="이름을 입력하세요"
+          />
           
-          {isEditing && (
+          <InputLabel>부모 선택</InputLabel>
+          <Select
+            value={member.parentId}
+            onChange={(e) => setMember({ ...member, parentId: e.target.value })}
+          >
+            <option value="">부모 선택 (선택사항)</option>
+            {familyData.members
+              .filter(m => m.id !== member.id)
+              .map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))
+            }
+          </Select>
+
+          <ButtonGroup>
             <ActionButton 
               type="button" 
-              onClick={handleCancel}
-              color="#6c757d"
+              onClick={handleAddMember}
+              color="#28a745"
             >
-              취소
+              {isEditing ? '수정' : '추가'}
             </ActionButton>
-          )}
-        </ButtonGroup>
-      </FormGroup>
-
-      <MemberList>
-        {familyData.members.map((m) => (
-          <MemberItem key={m.id}>
-            <MemberInfo>
-              <span>{m.name}</span>
-              {m.parentId && (
-                <ParentInfo>
-                  (부모: {familyData.members.find(p => p.id === m.parentId)?.name})
-                </ParentInfo>
-              )}
-            </MemberInfo>
-            {!m.isRoot && (
-              <ButtonGroup>
-                <ActionButton
-                  type="button"
-                  onClick={() => handleEdit(m)}
-                  color="#007bff"
-                  small
-                >
-                  수정
-                </ActionButton>
-                <ActionButton
-                  type="button"
-                  onClick={() => handleDelete(m.id)}
-                  color="#dc3545"
-                  small
-                >
-                  삭제
-                </ActionButton>
-              </ButtonGroup>
+            
+            {isEditing && (
+              <ActionButton 
+                type="button" 
+                onClick={handleCancel}
+                color="#6c757d"
+              >
+                취소
+              </ActionButton>
             )}
-          </MemberItem>
-        ))}
-      </MemberList>
+          </ButtonGroup>
+        </FormGroup>
+      </InputSection>
+
+      {/* 리스트 필드 섹션 */}
+      <ListSection>
+        <ListTitle>구성원 목록</ListTitle>
+        <MemberList>
+          {familyData.members.map((m) => (
+            <MemberItem key={m.id}>
+              <MemberInfo>
+                <MemberName>{m.name}</MemberName>
+                {m.parentId && (
+                  <ParentInfo>
+                    (부모: {familyData.members.find(p => p.id === m.parentId)?.name})
+                  </ParentInfo>
+                )}
+              </MemberInfo>
+              {!m.isRoot && (
+                <ButtonGroup>
+                  <ActionButton
+                    type="button"
+                    onClick={() => handleEdit(m)}
+                    color="#007bff"
+                    small
+                  >
+                    수정
+                  </ActionButton>
+                  <ActionButton
+                    type="button"
+                    onClick={() => handleDelete(m.id)}
+                    color="#dc3545"
+                    small
+                  >
+                    삭제
+                  </ActionButton>
+                </ButtonGroup>
+              )}
+            </MemberItem>
+          ))}
+        </MemberList>
+      </ListSection>
     </FormContainer>
   );
 };
 
+// 스타일 컴포넌트 수정 및 추가
 const FormContainer = styled.div`
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+`;
+
+const InputSection = styled.div`
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+`;
+
+const ListSection = styled.div`
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+`;
+
+const InputTitle = styled.h3`
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+`;
+
+const ListTitle = styled.h3`
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const InputLabel = styled.label`
+  color: #495057;
+  font-weight: 500;
+  margin-bottom: -0.5rem;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
 `;
 
 const Select = styled.select`
   width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
-const ActionButton = styled.button`
-  background-color: ${props => props.color};
-  color: white;
-  border: none;
-  padding: ${props => props.small ? '4px 8px' : '0.5rem 1rem'};
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: ${props => props.small ? '0.875rem' : '1rem'};
-  
-  &:hover {
-    opacity: 0.9;
+  &:focus {
+    outline: none;
+    border-color: #007bff;
   }
 `;
 
 const MemberList = styled.ul`
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const MemberItem = styled.li`
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f8f9fa;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.2s ease;
+  height: 100%;
+
+  &:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
 `;
 
 const MemberInfo = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+`;
+
+const MemberName = styled.span`
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ParentInfo = styled.span`
-  color: #666;
+  color: #6c757d;
   font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 1rem;
+`;
+
+const ActionButton = styled.button`
+  background-color: ${props => props.color};
+  color: white;
+  border: none;
+  padding: ${props => props.small ? '0.35rem 0.5rem' : '0.75rem 1rem'};
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: ${props => props.small ? '0.75rem' : '1rem'};
+  white-space: nowrap;
+  
+  &:hover {
+    opacity: 0.9;
+  }
 `;
 
 export default MemberForm; 

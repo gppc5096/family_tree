@@ -46,14 +46,51 @@ const FamilyTree = () => {
     setSelectedNode(null);
   };
 
-  const exportAsSVG = () => {
-    const svgData = svgRef.current.outerHTML;
-    const blob = new Blob([svgData], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
+  const exportTree = () => {
+    const format = familyData.styles.exportFormat;
+    const svgElement = svgRef.current;
+    
+    if (format === 'svg') {
+      // 기존 SVG 내보내기
+      const svgData = svgElement.outerHTML;
+      const blob = new Blob([svgData], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      downloadFile(url, 'svg');
+    } else {
+      // PNG 또는 JPG로 내보내기
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const img = new Image();
+      
+      // SVG를 base64로 인코딩
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.fillStyle = familyData.styles.backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        
+        // 캔버스를 이미지로 변환
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          downloadFile(url, format);
+        }, `image/${format}`);
+      };
+      
+      img.src = url;
+    }
+  };
+
+  const downloadFile = (url, format) => {
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${familyData.title || 'family-tree'}.svg`;
+    link.download = `${familyData.title || 'family-tree'}.${format}`;
     link.click();
+    URL.revokeObjectURL(url);
   };
 
   const renderTree = () => {
@@ -73,6 +110,8 @@ const FamilyTree = () => {
           cursor: isDragging ? 'grabbing' : 'grab'
         }}
       >
+        {renderDefs()}
+        
         <g transform={`translate(${pan.x},${pan.y}) scale(${zoom})`}>
           {/* 연결선 그리기 */}
           {nodePositions.map(node => {
@@ -106,14 +145,6 @@ const FamilyTree = () => {
                 style={{ cursor: 'pointer' }}
               >
                 {renderNode(node, member)}
-                <text
-                  x="60"
-                  y="35"
-                  textAnchor="middle"
-                  fill={familyData.styles.textColor}
-                >
-                  {member.name}
-                </text>
               </g>
             );
           })}
@@ -133,6 +164,26 @@ const FamilyTree = () => {
     const nodeWidth = 120;
     const nodeHeight = 60;
 
+    return (
+      <g>
+        {renderNodeShape(isSelected, nodeWidth, nodeHeight, member)}
+        <text
+          x="60"
+          y="35"
+          textAnchor="middle"
+          fill={familyData.styles.textColor}
+          style={{ 
+            fontFamily: `${familyData.styles.titleFont}, sans-serif`,
+            fontSize: '14px'  // 노드 내 텍스트 크기
+          }}
+        >
+          {member.name}
+        </text>
+      </g>
+    );
+  };
+
+  const renderNodeShape = (isSelected, nodeWidth, nodeHeight, member) => {
     switch (familyData.styles.nodeShape) {
       case 'circle':
         return (
@@ -283,7 +334,12 @@ const FamilyTree = () => {
   }, [familyData.members]);
 
   return (
-    <TreeContainer style={{ backgroundColor: familyData.styles.backgroundColor }}>
+    <TreeContainer 
+      style={{ 
+        backgroundColor: familyData.styles.backgroundColor,
+        fontFamily: `${familyData.styles.titleFont}, sans-serif`  // 전체 컨테이너에 폰트 적용
+      }}
+    >
       <Header>
         <BackButton onClick={() => window.location.href = '/'}>
           ← 설정으로
@@ -295,7 +351,7 @@ const FamilyTree = () => {
         >
           {familyData.title}
         </Title>
-        <ExportButton onClick={exportAsSVG}>내보내기</ExportButton>
+        <ExportButton onClick={exportTree}>내보내기</ExportButton>
       </Header>
       
       <TreeContent>
@@ -394,6 +450,7 @@ const NodeDetail = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   min-width: 200px;
+  font-family: inherit; // 부모로부터 폰트 상속
 `;
 
 const CloseButton = styled.button`

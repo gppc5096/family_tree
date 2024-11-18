@@ -151,6 +151,27 @@ const StyleSettings = () => {
           ))}
         </Select>
       </StyleSection>
+
+      <StyleSection>
+        <SectionTitle>내보내기 설정</SectionTitle>
+        <Label>파일 형식</Label>
+        <Select
+          value={familyData.styles.exportFormat}
+          onChange={(e) => handleStyleChange('exportFormat', e.target.value)}
+        >
+          <option value="svg">SVG (벡터 이미지)</option>
+          <option value="png">PNG (투명 배경 지원)</option>
+          <option value="jpeg">JPG (작은 파일 크기)</option>
+        </Select>
+        <FormatDescription>
+          {familyData.styles.exportFormat === 'svg' && 
+            '벡터 이미지 형식으로, 크기를 자유롭게 조절할 수 있습니다.'}
+          {familyData.styles.exportFormat === 'png' && 
+            '투명 배경을 지원하는 고품질 이미지 형식입니다.'}
+          {familyData.styles.exportFormat === 'jpeg' && 
+            '작은 파일 크기로 저장되는 이미지 형식입니다.'}
+        </FormatDescription>
+      </StyleSection>
     </StyleContainer>
   );
 };
@@ -207,6 +228,13 @@ const RangeValue = styled.div`
   color: #666;
   font-size: 0.875rem;
   margin-bottom: 1rem;
+`;
+
+const FormatDescription = styled.div`
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.5rem;
+  font-style: italic;
 `;
 
 export default StyleSettings; 

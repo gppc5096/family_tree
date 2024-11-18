@@ -46,115 +46,141 @@ const Settings = () => {
   };
 
   return (
-    <SettingsContainer>
-      <h1>가족 가계도 설정</h1>
+    <PageContainer>
+      <PageTitle>가족 가계도 설정</PageTitle>
       <form onSubmit={handleSubmit}>
-        <Section>
-          <SectionHeader>
-            <h2>제목 설정</h2>
-            {familyData.title && !isEditing && (
-              <ButtonGroup>
-                <ActionButton
-                  type="button"
-                  onClick={() => setIsEditing(true)}
-                  color="#007bff"
-                >
-                  수정
-                </ActionButton>
-                <ActionButton
-                  type="button"
-                  onClick={handleDelete}
-                  color="#dc3545"
-                >
-                  삭제
-                </ActionButton>
-              </ButtonGroup>
-            )}
-          </SectionHeader>
-          
-          {(isEditing || !familyData.title) && (
-            <div>
-              <Input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="가계도 제목을 입력하세요"
-              />
-              <ButtonGroup>
-                <ActionButton type="submit" color="#28a745">
-                  {isEditing ? '수정' : '저장'}
-                </ActionButton>
-                {isEditing && (
+        <SectionsContainer>
+          <SectionCard>
+            <SectionHeader>
+              <SectionTitle>
+                <SectionIcon>📝</SectionIcon>
+                제목 설정
+              </SectionTitle>
+              {familyData.title && !isEditing && (
+                <ButtonGroup>
                   <ActionButton
                     type="button"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setTitle(familyData.title);
-                    }}
-                    color="#6c757d"
+                    onClick={() => setIsEditing(true)}
+                    color="#007bff"
                   >
-                    취소
+                    수정
                   </ActionButton>
-                )}
-              </ButtonGroup>
-            </div>
-          )}
-          {!isEditing && familyData.title && (
-            <TitleDisplay>{familyData.title}</TitleDisplay>
-          )}
-        </Section>
-        
-        <Section>
-          <h2>구성원 추가</h2>
-          <MemberForm />
-        </Section>
+                  <ActionButton
+                    type="button"
+                    onClick={handleDelete}
+                    color="#dc3545"
+                  >
+                    삭제
+                  </ActionButton>
+                </ButtonGroup>
+              )}
+            </SectionHeader>
+            
+            <SectionContent>
+              {(isEditing || !familyData.title) && (
+                <div>
+                  <Input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="가계도 제목을 입력하세요"
+                  />
+                  <ButtonGroup>
+                    <ActionButton type="submit" color="#28a745">
+                      {isEditing ? '수정' : '저장'}
+                    </ActionButton>
+                    {isEditing && (
+                      <ActionButton
+                        type="button"
+                        onClick={() => {
+                          setIsEditing(false);
+                          setTitle(familyData.title);
+                        }}
+                        color="#6c757d"
+                      >
+                        취소
+                      </ActionButton>
+                    )}
+                  </ButtonGroup>
+                </div>
+              )}
+              {!isEditing && familyData.title && (
+                <TitleDisplay>{familyData.title}</TitleDisplay>
+              )}
+            </SectionContent>
+          </SectionCard>
 
-        <Section>
-          <h2>스타일 설정</h2>
-          <StyleSettings />
-        </Section>
+          <SectionCard>
+            <SectionHeader>
+              <SectionTitle>
+                <SectionIcon>👥</SectionIcon>
+                구성원 추가
+              </SectionTitle>
+            </SectionHeader>
+            <SectionContent>
+              <MemberForm />
+            </SectionContent>
+          </SectionCard>
 
-        <ButtonGroup>
-          <ResetButton type="button" onClick={handleReset}>
-            데이터 초기화
-          </ResetButton>
-          <ViewButton type="button" onClick={() => navigate('/tree')}>
-            가계도 보기
-          </ViewButton>
-        </ButtonGroup>
+          <SectionCard>
+            <SectionHeader>
+              <SectionTitle>
+                <SectionIcon>🎨</SectionIcon>
+                스타일 설정
+              </SectionTitle>
+            </SectionHeader>
+            <SectionContent>
+              <StyleSettings />
+            </SectionContent>
+          </SectionCard>
+        </SectionsContainer>
+
+        <BottomSection>
+          <ButtonGroup>
+            <ResetButton type="button" onClick={handleReset}>
+              데이터 초기화
+            </ResetButton>
+            <ViewButton type="button" onClick={() => navigate('/tree')}>
+              가계도 보기
+            </ViewButton>
+          </ButtonGroup>
+        </BottomSection>
       </form>
-    </SettingsContainer>
+    </PageContainer>
   );
 };
 
-const SettingsContainer = styled.div`
-  max-width: 800px;
+const PageContainer = styled.div`
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 `;
 
-const Section = styled.section`
+const PageTitle = styled.h1`
+  text-align: center;
+  color: #2c3e50;
   margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: bold;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+const SectionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
-const Button = styled.button`
-  background-color: #007bff;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  
+const SectionCard = styled.section`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+
   &:hover {
-    background-color: #0056b3;
+    transform: translateY(-2px);
   }
 `;
 
@@ -162,21 +188,68 @@ const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(to right, #f8f9fa, white);
+  border-bottom: 1px solid #eee;
+`;
+
+const SectionTitle = styled.h2`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+`;
+
+const SectionIcon = styled.span`
+  font-size: 1.5rem;
+`;
+
+const SectionContent = styled.div`
+  padding: 1.5rem;
+`;
+
+const BottomSection = styled.div`
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem;
   margin-bottom: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  justify-content: center;
 `;
 
 const ActionButton = styled.button`
   background-color: ${props => props.color};
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: opacity 0.2s ease;
   
   &:hover {
     opacity: 0.9;
@@ -184,35 +257,15 @@ const ActionButton = styled.button`
 `;
 
 const TitleDisplay = styled.div`
-  padding: 0.5rem;
+  padding: 1rem;
   font-size: 1.2rem;
-  color: #333;
+  color: #2c3e50;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
 `;
 
-const ResetButton = styled.button`
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  
-  &:hover {
-    background-color: #c82333;
-  }
-`;
-
-const ViewButton = styled.button`
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
+const ResetButton = styled(ActionButton).attrs({ color: '#dc3545' })``;
+const ViewButton = styled(ActionButton).attrs({ color: '#007bff' })``;
 
 export default Settings; 

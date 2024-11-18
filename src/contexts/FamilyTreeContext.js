@@ -24,7 +24,8 @@ export const FamilyTreeProvider = ({ children }) => {
       lineWidth: 2,
       titleColor: '#000000',
       titleSize: '30',
-      titleFont: 'Noto Sans KR'
+      titleFont: 'Noto Sans KR',
+      exportFormat: 'svg'
     }
   });
 
