@@ -35,38 +35,38 @@ const StyleSettings = () => {
     { name: 'Sunflower', label: '선플라워' }
   ];
 
+  const colorOptions = [
+    { key: 'backgroundColor', label: '배경 색상' },
+    { key: 'lineColor', label: '선 색상' },
+    { key: 'nodeColor', label: '노드 색상' },
+    { key: 'textColor', label: '텍스트 색상' }
+  ];
+
   return (
     <StyleContainer>
       <StyleSection>
         <SectionTitle>색상 설정</SectionTitle>
-        {Object.entries(familyData.styles).map(([key, value]) => {
-          if (['backgroundColor', 'lineColor', 'nodeColor', 'textColor', 'titleColor'].includes(key)) {
-            return (
+        <ColorOptionsContainer>
+          <ColorGrid>
+            {colorOptions.map(({ key, label }) => (
               <ColorOption key={key}>
-                <Label>
-                  {key === 'backgroundColor' && '배경 색상'}
-                  {key === 'lineColor' && '선 색상'}
-                  {key === 'nodeColor' && '노드 색상'}
-                  {key === 'textColor' && '텍스트 색상'}
-                  {key === 'titleColor' && '제목 색상'}
-                </Label>
+                <Label>{label}</Label>
                 <ColorPreview
-                  color={value}
+                  color={familyData.styles[key]}
                   onClick={() => setActiveColor(activeColor === key ? null : key)}
                 />
-                {activeColor === key && (
-                  <PickerContainer>
-                    <ChromePicker
-                      color={value}
-                      onChange={(color) => handleColorChange(color, key)}
-                    />
-                  </PickerContainer>
-                )}
               </ColorOption>
-            );
-          }
-          return null;
-        })}
+            ))}
+          </ColorGrid>
+          {activeColor && (
+            <FixedPickerContainer>
+              <ChromePicker
+                color={familyData.styles[activeColor]}
+                onChange={(color) => handleColorChange(color, activeColor)}
+              />
+            </FixedPickerContainer>
+          )}
+        </ColorOptionsContainer>
       </StyleSection>
 
       <StyleSection>
@@ -182,21 +182,53 @@ const StyleContainer = styled.div`
   gap: 1rem;
 `;
 
-const ColorOption = styled.div`
+const ColorOptionsContainer = styled.div`
   position: relative;
-  margin-bottom: 1rem;
+  min-height: auto;
+`;
+
+const ColorGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+`;
+
+const ColorOption = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const FixedPickerContainer = styled.div`
+  position: fixed;
+  top: 60%;
+  left: 310px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 `;
 
 const Label = styled.div`
   margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
 `;
 
 const ColorPreview = styled.div`
-  width: 100px;
-  height: 30px;
-  border: 1px solid #ccc;
+  width: 100%;
+  height: 40px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
   background-color: ${props => props.color};
   cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 
 const PickerContainer = styled.div`
