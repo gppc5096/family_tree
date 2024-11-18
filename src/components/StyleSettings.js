@@ -115,14 +115,6 @@ const StyleSettings = () => {
             color={familyData.styles.titleColor}
             onClick={() => setActiveColor(activeColor === 'titleColor' ? null : 'titleColor')}
           />
-          {activeColor === 'titleColor' && (
-            <PickerContainer>
-              <ChromePicker
-                color={familyData.styles.titleColor}
-                onChange={(color) => handleColorChange(color, 'titleColor')}
-              />
-            </PickerContainer>
-          )}
         </ColorOption>
         
         <Label>폰트 크기</Label>
@@ -229,12 +221,6 @@ const ColorPreview = styled.div`
   &:hover {
     transform: translateY(-2px);
   }
-`;
-
-const PickerContainer = styled.div`
-  position: absolute;
-  z-index: 2;
-  margin-top: 0.5rem;
 `;
 
 const StyleSection = styled.div`
